@@ -13,8 +13,8 @@
 			right:0;
 		}
 		svg {
-			width: 600px;
-			height: 300px;
+			width: 800px;
+			height: 400px;
 		}
 
 	</style>
@@ -27,8 +27,8 @@ var parseTime = d3.timeParse('%m/%d/%Y')
 var dateFormatter = d3.timeFormat("%b. %d");
 
 var svg = d3.select('svg')
-var height = 300
-var width = 600
+var height = 400
+var width = 800
 var margin = {left: 20, right: 30, top: 20, bottom: 20}
 
 
@@ -69,8 +69,8 @@ dates: columns
 
   xAxis = g => g
     .attr("transform", `translate(0,${height - margin.bottom})`)
-    .call(d3.axisBottom(x).ticks(width / 80).tickSizeOuter(0))
-
+    .call(d3.axisBottom(x).ticks(width / 80).tickSizeOuter(0).tickFormat(d3.timeFormat("%b")))
+;
 
     yAxis = g => g
     .attr("transform", `translate(${margin.left},0)`)
@@ -107,7 +107,19 @@ dates: columns
 
   d3.select('path#year0').attr("stroke", "steelblue")
 
+  const dot = svg.append("g")
 
+  dot.append("circle")
+      .attr("r", 2.5);
+
+  dot.append("text")
+      .style("font", "10px sans-serif")
+      .attr("text-anchor", "middle")
+      .attr("y", -8);
+
+    dot.attr("transform", "translate(610.5012376237623,51.5)")
+    .attr("id", "thisyear")
+    dot.select("text").text("2018-19")
 
   svg.call(hover, path);
 
@@ -118,6 +130,7 @@ dates: columns
 
 
 function hover(svg, path) {
+
   svg
       .style("position", "relative");
 
@@ -153,16 +166,23 @@ function hover(svg, path) {
     path.attr("stroke", d => d === s ? 'steelblue' : "#ddd").filter(d => d === s).raise();
     dot.attr("transform", `translate(${x(data.dates[i])},${y(s.values[i])})`);
     dot.select("text").text(s.name)
+    d3.select('#thisyear').remove()
+
+
   }
 
   function entered() {
     path.style("mix-blend-mode", null).attr("stroke", "#ddd");
-    dot.attr("display", null);
+    dot.attr("display", 'null');
+
   }
 
   function left() {
     path.style("mix-blend-mode", "multiply").attr("stroke", null);
-    dot.attr("display", "none");
+    dot.attr("transform", "translate(610.5012376237623,51.5)")
+      d3.select('path#year0').attr("stroke", "steelblue")
+    dot.select("text").text("2018-19")
+
   }
 }
 
